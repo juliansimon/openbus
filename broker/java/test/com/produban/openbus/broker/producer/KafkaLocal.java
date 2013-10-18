@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import kafka.server.KafkaConfig;
-import kafka.server.KafkaServer;
 import kafka.server.KafkaServerStartable;
 
 public class KafkaLocal {
