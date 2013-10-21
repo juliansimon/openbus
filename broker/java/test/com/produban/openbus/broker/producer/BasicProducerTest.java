@@ -1,46 +1,29 @@
 package com.produban.openbus.broker.producer;
 
 import static org.junit.Assert.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import kafka.consumer.Consumer;
-import kafka.consumer.ConsumerConfig;
-import kafka.consumer.ConsumerIterator;
-import kafka.consumer.KafkaStream;
-import kafka.javaapi.consumer.ConsumerConnector;
+import kafka.message.MessageAndMetadata;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.produban.openbus.broker.consumer.BasicConsumer;
+
 public class BasicProducerTest {
 
-	static ConsumerConnector consumer;
+	static BasicConsumer consumer;
 	static KafkaLocal kafka;
 
 	@BeforeClass
 	public static void startKafka(){		
 		try {
 			kafka = new KafkaLocal();
+			Thread.sleep(5000);
 		} catch (Exception e){
 			fail("Error instantiating local Kafka broker");
 			System.out.println(e.getMessage());
 		}
-
-		consumer = Consumer.createJavaConsumerConnector(createConsumerConfig());	
-	}
-
-	private static ConsumerConfig createConsumerConfig()
-	{
-		Properties props = new Properties();
-		props.put("zookeeper.connect", kafka.getKafkaProperties().getProperty("zookeeper.connect"));
-		props.put("group.id", "test_consumer_group");
-
-		return new ConsumerConfig(props);
+		consumer = new BasicConsumer("test", kafka.getKafkaProperties().getProperty("zookeeper.connect"), "test_consumer_group");
 	}
 
 	@Test
@@ -51,13 +34,11 @@ public class BasicProducerTest {
 		producer.sendMessage(topic, "1", "first message");
 		producer.sendMessage(topic, "2", "second message");
 
-		Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
-	    topicCountMap.put(topic, new Integer(1));
-	    Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumer.createMessageStreams(topicCountMap);
-	    KafkaStream<byte[], byte[]> stream =  consumerMap.get(topic).get(0);
-	    ConsumerIterator<byte[], byte[]> it = stream.iterator();
-	    while(it.hasNext())
-	    System.out.println(new String(it.next().message()));
+		MessageAndMetadata<byte[], byte[]> firstMessage = consumer.consumeOne();
+		assertEquals("first message", firstMessage.message());
+		
+		MessageAndMetadata<byte[], byte[]> secondMessage = consumer.consumeOne();
+		assertEquals("second message", secondMessage.message());
 
 	}
 
