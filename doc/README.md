@@ -1,6 +1,4 @@
-## Intro
-
-Project Openbus
+## Project Openbus
 
 # Openbus: Logs to Kafka to Hadoop 
 In this subproject will be collected openbus activity logs of different web application servers be sent to Kafka broker that handles distribution. Camus will use the project to subscribe to topics and throw a load Map Reduce task messages in HDFS.
@@ -28,8 +26,9 @@ The steps that we will continue to carry out the project are:
 
 - **Run process MapReduce that loads messages Camus in HDFS**
 
-*cd /home/[user]/camus/target
-hadoop jar camus-example-0.1.0-SNAPSHOT-shaded.jar com.linkedin.camus.etl.kafka.CamusJob -P camus-apachelog.properties*
+*cd /home/[user]/camus/target*
+
+*hadoop jar camus-example-0.1.0-SNAPSHOT-shaded.jar com.linkedin.camus.etl.kafka.CamusJob -P camus-apachelog.properties*
 
 - **Check load to the messages in HDFS**
 
@@ -40,6 +39,8 @@ hadoop jar camus-example-0.1.0-SNAPSHOT-shaded.jar com.linkedin.camus.etl.kafka.
 - **Create table in Hive**
 
 Run hive
+
+Add resources
 
 *add jar /home/[user]/libs/hive-serde-0.11.0.jar ;* 
 
@@ -71,9 +72,9 @@ http://[host]:9999/hwi/session_result.jsp?sessionName=LogAvro20131017
 
 *add jar /home/juliansimon/libs/hive-exec-0.11.0.jar ;*
 
-**Query**
-
 *desc apacheLogTable;*
+
+**Query**
 
 *select count(*) from apacheLogTable;*
 
