@@ -26,6 +26,8 @@ import kafka.producer.ProducerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.produban.openbus.processor.properties.Conf;
+
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
 import storm.trident.operation.TridentOperationContext;
@@ -37,12 +39,8 @@ import storm.trident.tuple.TridentTuple;
 public class PushKafka extends BaseFunction {
 
 	Logger LOG = LoggerFactory.getLogger(PushKafka.class);
-	private static final long serialVersionUID = 1L;
-	
-	//TODO: Temporal
+	private static final long serialVersionUID = 1L;	
 	private final static String KAFKA_TOPIC_SEND = "test1";
-	private final static String ZOOKEEPERS_HOST = "192.168.20.136";
-	private final static String BROKER_PORT = "9092"; 
 	 
 	protected Producer<String, String> producer;
 	ProducerConfig config;
@@ -50,10 +48,10 @@ public class PushKafka extends BaseFunction {
 	@Override
 	public void prepare(Map conf, TridentOperationContext context) {
 		Properties props = new Properties();
-		props.put("zk.connect", ZOOKEEPERS_HOST);
+		props.put("zk.connect", Conf.ZOOKEEPER_HOST);
 		props.put("serializer.class", "kafka.serializer.StringEncoder");
 		props.put("request.required.acks", "1");		
-		props.put("metadata.broker.list", ZOOKEEPERS_HOST + ":" + BROKER_PORT);
+		props.put("metadata.broker.list", Conf.ZOOKEEPER_HOST + ":" + Conf.KAFKA_BROKER_PORT);
 		
 		config = new ProducerConfig(props);
 	}

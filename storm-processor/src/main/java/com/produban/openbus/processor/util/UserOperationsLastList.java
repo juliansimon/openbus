@@ -26,7 +26,7 @@ import storm.trident.tuple.TridentTuple;
 import storm.trident.tuple.TridentTupleView;
 
 /**
- * The last operation of the user
+ * The last operations of the user
  *
  */
 public class UserOperationsLastList implements CombinerAggregator<LinkedList<Map<String, String>>> {
@@ -39,8 +39,7 @@ public class UserOperationsLastList implements CombinerAggregator<LinkedList<Map
 				
 		TridentTupleView tridentTupleView = (TridentTupleView)tuple;
 		tridentTupleView.getValues();
-		
-		
+				
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("request", tuple.getStringByField("request"));
 		map.put("datetime", tuple.getStringByField("datetime"));

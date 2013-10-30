@@ -41,12 +41,19 @@ public class SimpleFileStringSpout extends BaseRichSpout {
 
 	private static BufferedReader br;
 	private SpoutOutputCollector collector;
-
+	private boolean cycle = false;
+	private String fileName;    
+	
+	public void setCycle(boolean cycle) {
+	        this.cycle = cycle;
+	}
+		
 	public SimpleFileStringSpout(String sourceFileName, String emittedTupleName) {
 		super();
 		this.emittedTupleName = emittedTupleName;
 		try {
 			br = new BufferedReader(new FileReader(new File(sourceFileName)));
+			fileName = sourceFileName;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -72,16 +79,19 @@ public class SimpleFileStringSpout extends BaseRichSpout {
 		try {
 			String rawEvent = br.readLine();
 			if (rawEvent != null) {
-
 				try {
 					String messageId = UUID.randomUUID().toString();
 					collector.emit(new Values(rawEvent), messageId);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			} else {
+			} else if (cycle) {
+				br.close();
+				br = new BufferedReader(new FileReader(new File(fileName)));				
+			} else {	
 				Utils.sleep(1);
 			}
+			
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

@@ -26,25 +26,24 @@ import org.apache.hadoop.fs.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.produban.openbus.processor.properties.Conf;
+
 /**
  * Store HDFS    
  */
 public class HDFSStore {
 	private final static Logger LOG = LoggerFactory.getLogger(HDFSStore.class);
 	
-	private final static String HDFS_DIR = "hdfs://192.168.20.136:8020/user/gpadmin/openbus";
-	private final static String HDFS_USER = "gpadmin";
-	
     FileSystem fileSystem;	
     Configuration configuration;
 
     public HDFSStore() {   
     	configuration = new Configuration();     	
-	    configuration.set("fs.defaultFS", HDFS_DIR);                    
-	    configuration.set("hadoop.job.ugi", HDFS_USER);	    	    
-	    System.setProperty("HADOOP_USER_NAME", HDFS_USER);
+	    configuration.set("fs.defaultFS", Conf.HDFS_DIR);                    
+	    configuration.set("hadoop.job.ugi", Conf.HDFS_USER);	    	    
+	    System.setProperty("HADOOP_USER_NAME", Conf.HDFS_USER);
 	      
-	    fileSystem = HDFSUtils.getFS(HDFS_DIR, configuration);
+	    fileSystem = HDFSUtils.getFS(Conf.HDFS_DIR, configuration);
     }
 
     public HDFSStore(String hdfsDir, String hdfsUser) {   
@@ -52,12 +51,12 @@ public class HDFSStore {
 	    configuration.set("fs.defaultFS", hdfsDir);                    	    
 	    System.setProperty("HADOOP_USER_NAME", hdfsUser);
 	      
-	    fileSystem = HDFSUtils.getFS(HDFS_DIR, configuration);
+	    fileSystem = HDFSUtils.getFS(Conf.HDFS_DIR, configuration);
     }
         
 	public void copyFromLocalFile(String pathLocal, String pathHDFS) throws IOException {
 		try {						
-			fileSystem.copyFromLocalFile(new Path(pathLocal), new Path(HDFS_DIR + File.pathSeparator + pathHDFS));						
+			fileSystem.copyFromLocalFile(new Path(pathLocal), new Path(Conf.HDFS_DIR + File.pathSeparator + pathHDFS));						
 		} catch (IOException e) {
 			LOG.error("Error writing to hdfs: " + pathHDFS + " " + e);
 			throw new RuntimeException(e);
@@ -65,10 +64,10 @@ public class HDFSStore {
 	}     
 
     public void writeFile2HDFS(String path, String toWrite) throws IOException {
-        String tmp = HDFS_DIR + File.separator + path + ".tmp";
+        String tmp = Conf.HDFS_DIR + File.separator + path + ".tmp";
         FSDataOutputStream os = fileSystem.create(new Path(tmp), true);
         os.writeUTF(toWrite);
         os.close();
-        fileSystem.rename(new Path(tmp), new Path(HDFS_DIR + File.separator + path));
+        fileSystem.rename(new Path(tmp), new Path(Conf.HDFS_DIR + File.separator + path));
     }
 }

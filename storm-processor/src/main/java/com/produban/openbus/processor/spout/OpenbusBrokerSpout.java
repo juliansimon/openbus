@@ -21,6 +21,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.produban.openbus.processor.properties.Conf;
+
 import storm.kafka.Partition;
 import storm.kafka.ZkHosts;
 import storm.kafka.trident.GlobalPartitionInformation;
@@ -35,9 +37,6 @@ public class OpenbusBrokerSpout {
 	private static Logger LOG = LoggerFactory.getLogger(OpenbusBrokerSpout.class);
 	
 	private final static String KAFKA_TOPIC = "jsonTopic";
-	private final static String ZOOKEEPERS_HOST = "192.168.20.136:2181";
-	private final static String ZOOKEEPERS_BROKER = "/brokers"; 
-	
 	
 	private TridentKafkaConfig config = null;
 	private ZkHosts zhost = null; 
@@ -45,13 +44,13 @@ public class OpenbusBrokerSpout {
 
 
 	public OpenbusBrokerSpout() {
-    	zhost = new ZkHosts(ZOOKEEPERS_HOST, ZOOKEEPERS_BROKER);        
+    	zhost = new ZkHosts(Conf.ZOOKEEPER_HOST + ":" + Conf.ZOOKEEPER_PORT, Conf.ZOOKEEPER_BROKER);        
         config = new TridentKafkaConfig(zhost, KAFKA_TOPIC);      
         config.forceStartOffsetTime(-2);
 	}
 	
 	public OpenbusBrokerSpout(String kafkaTopic) {    	
-    	zhost = new ZkHosts(ZOOKEEPERS_HOST, ZOOKEEPERS_BROKER);    	
+    	zhost = new ZkHosts(Conf.ZOOKEEPER_HOST, Conf.ZOOKEEPER_BROKER);    	
         config = new TridentKafkaConfig(zhost, kafkaTopic);                        
         config.forceStartOffsetTime(-2);
 	}

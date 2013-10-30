@@ -29,6 +29,8 @@ import org.apache.avro.io.DecoderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.produban.openbus.processor.properties.Conf;
+
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
 import storm.trident.operation.TridentOperationContext;
@@ -42,7 +44,6 @@ public class AvroDecoder extends BaseFunction {
 	Logger LOG = LoggerFactory.getLogger(AvroDecoder.class);
 	
 	private static final long serialVersionUID = 1L;
-	private static final String SCHEMA_APACHE_LOGS = "apacheLog.avsc";
 	
 	private Schema schema;
 	
@@ -50,7 +51,7 @@ public class AvroDecoder extends BaseFunction {
 	public void prepare(Map conf, TridentOperationContext context) {		
 		Schema.Parser parser = new Schema.Parser();
 		try {
-			schema = parser.parse(getClass().getClassLoader().getResourceAsStream(SCHEMA_APACHE_LOGS));
+			schema = parser.parse(getClass().getClassLoader().getResourceAsStream(Conf.SCHEMA_APACHE_LOGS));
 		} catch (IOException e) {
 			LOG.error("Parser schema avro " + e);
 			throw new RuntimeException(e);
