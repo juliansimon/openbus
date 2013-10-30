@@ -27,3 +27,5 @@ Is necesary install the proyect storm-kafka-0.8-plus (https://github.com/wurstme
 	- ```mvn pakcage```
 	- ```storm jar target/storm-processor-0.0.1-jar-with-dependencies.jar com.produban.openbus.processor.example.TridentSocialNetworkTest socialnetwork```
 
+
+
